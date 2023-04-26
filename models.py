@@ -2,7 +2,7 @@
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-DEFAULT_IMAGE_URL = "/static/<url>"
+DEFAULT_IMAGE_URL = "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?cs=srgb&dl=pexels-pixabay-45201.jpg&fm=jpg"
 
 def connect_db(app):
     """Connect to database."""
@@ -29,6 +29,6 @@ class User(db.Model):
     )
 
     image_url = db.Column(
-        db.Text
-        # default image url
+        db.Text,
+        default= DEFAULT_IMAGE_URL
     )
