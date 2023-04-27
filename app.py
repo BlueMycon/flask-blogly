@@ -64,7 +64,7 @@ def show_user_info(user_id):
 
     user = User.query.get_or_404(user_id)
     # posts = user.posts
-    posts = Post.query.filter(user_id == user_id).all()
+    posts = user.posts
 
     return render_template('user_detail.html', user = user, posts = posts)
 
@@ -104,7 +104,10 @@ def delete_user(user_id):
     """Delete the user."""
 
     user = User.query.get_or_404(user_id)
+    posts = user.posts
 
+    for post in posts:
+        db.session.delete(post)
     db.session.delete(user)
     db.session.commit()
 

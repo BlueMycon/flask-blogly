@@ -4,18 +4,30 @@
 
 {% block content %}
 
-<form method="POST">
-  <label for="first-name">First Name: </label>
-  <input name="first-name" value="{{user.first_name}}">
-
-  <label for="last-name">Last Name: </label>
-  <input name="last-name" value="{{user.last_name}}">
-
-  <label for="img-url">Profile Image Link: </label>
-  <input name="img-url" value="{{user.image_url}}">
-
-  <button>Save</button>
-</form>
 
 
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <h1>Add New User</h1>
+      <div class="d-flex">
+        <form method="POST">
+          <label for="first-name" class="d-block">First Name: </label>
+          <input name="first-name" class="d-block" value="{{user.first_name}}">
+
+          <label for="last-name" class="d-block">Last Name: </label>
+          <input name="last-name" class="d-block" value="{{user.last_name}}">
+
+          <label for="img-url" class="d-block">Profile Image Link: </label>
+          <input name="img-url" class="d-block" value="{{user.image_url}}">
+
+          <button class='btn btn-primary d-block' >Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit User Form -->
 {% endblock %}
