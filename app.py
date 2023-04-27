@@ -62,9 +62,9 @@ def process_add_form():
 def show_user_info(user_id):
     """Show information about the given user."""
 
-    user = User.query.get(user_id)
+    user = User.query.get_or_404(user_id)
+    # posts = user.posts
     posts = Post.query.filter(user_id == user_id).all()
-
 
     return render_template('user_detail.html', user = user, posts = posts)
 
@@ -74,7 +74,7 @@ def show_user_info(user_id):
 def show_edit_page(user_id):
     """Show the edit page for a user."""
 
-    user = User.query.get(user_id)
+    user = User.query.get_or_404(user_id)
 
     return render_template('user_edit.html', user = user)
 
@@ -87,7 +87,7 @@ def process_edit_form(user_id):
     last_name = request.form["last-name"]
     img_url = request.form["img-url"] if request.form["img-url"] else None
 
-    user = User.query.get(user_id)
+    user = User.query.get_or_404(user_id)
 
     user.first_name = first_name
     user.last_name = last_name
@@ -103,7 +103,7 @@ def process_edit_form(user_id):
 def delete_user(user_id):
     """Delete the user."""
 
-    user = User.query.get(user_id)
+    user = User.query.get_or_404(user_id)
 
     db.session.delete(user)
     db.session.commit()
@@ -111,11 +111,13 @@ def delete_user(user_id):
     flash("Redirected to Users")
     return redirect("/users")
 
+# Post routes
+
 @app.get('/users/<int:user_id>/posts/new')
 def show_new_post_form(user_id):
     """Show form to add a post for that user."""
 
-    user = User.query.get(user_id)
+    user = User.query.get_or_404(user_id)
 
     return render_template('new_post.html', user=user)
 
@@ -126,7 +128,7 @@ def create_new_post(user_id):
     title = request.form["title"]
     content = request.form["content"]
 
-    new_post = Post(title = title, content = content, user_id = user_id)
+    new_post = Post(title=title, content=content, user_id=user_id)
 
     db.session.add(new_post)
     db.session.commit()
@@ -138,17 +140,17 @@ def create_new_post(user_id):
 def show_post_detail(post_id):
     """Show a post"""
 
-    post = Post.query.get(post_id)
+    post = Post.query.get_or_404(post_id)
 
-    return render_template("post_detail.html", post = post)
+    return render_template("post_detail.html", post=post)
 
 @app.get('/posts/<int:post_id>/edit')
 def show_post_edit(post_id):
     """Show form to edit a post"""
 
-    post = Post.query.get(post_id)
+    post = Post.query.get_or_404(post_id)
 
-    return render_template("post_edit.html", post = post)
+    return render_template("post_edit.html", post=post)
 
 
 @app.post('/posts/<int:post_id>/edit')
@@ -158,7 +160,8 @@ def handle_post_edit(post_id):
     title = request.form["title"]
     content = request.form["content"]
 
-    post = Post.query.get(post_id)
+
+    post = Post.query.get_or_404(post_id)
 
     post.title = title
     post.content = content
@@ -171,7 +174,8 @@ def handle_post_edit(post_id):
 def handle_post_delete(post_id):
     """Delete the post"""
 
-    post = Post.query.get(post_id)
+
+    post = Post.query.get_or_404(post_id)
 
     user_id = post.user_id
 
@@ -181,3 +185,6 @@ def handle_post_delete(post_id):
     return redirect(f"/users/{user_id}")
 
 
+@app.errorhandler(404)
+def page_not_found():
+    return render_template("404.html"), 404

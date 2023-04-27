@@ -50,7 +50,8 @@ class Post(db.Model):
     id = db.Column(
         db.Integer,
         primary_key=True,
-        autoincrement=True)
+        autoincrement=True
+    )
 
     title = db.Column(
         db.String(50),
@@ -63,7 +64,7 @@ class Post(db.Model):
     )
 
     created_at = db.Column(
-        db.DateTime(timezone = True),
+        db.DateTime(timezone=True),
         nullable = False,
         default= datetime.datetime.utcnow
     )
@@ -74,7 +75,5 @@ class Post(db.Model):
         nullable = False
     )
 
-    user = db.relationship("User", backref = "posts")
-
-
+    user = db.relationship("User", backref="posts")
 
