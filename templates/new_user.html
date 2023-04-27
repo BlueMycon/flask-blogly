@@ -1,10 +1,21 @@
+{% extends 'base.html' %}
+
 {% block title %}Blogly{% endblock %}
 
 {% block content %}
 <form method="POST">
-  <p>First Name:     <input name="first-name"></p>
-  <p>Last Name:  <input name="last-name"></p>
-  <p>Profile Image Link:   <input name="img-url"></p>
+  <label for="first-name">First Name: </label>
+  <input name="first-name">
+
+  <label for="last-name">Last Name: </label>
+  <input name="last-name">
+
+  <label for="img-url">Profile Image Link: </label>
+  <input name="img-url">
+
   <button>Save</button>
 </form>
+
+
+<!-- New User Form -->
 {% endblock %}

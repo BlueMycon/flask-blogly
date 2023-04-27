@@ -1,4 +1,19 @@
+{% extends 'base.html' %}
+
 {% block title %}Blogly{% endblock %}
+
+<form method="POST">
+  <label for="first-name">First Name: </label>
+  <input name="first-name" value="{{user.first_name}}">
+
+  <label for="last-name">Last Name: </label>
+  <input name="last-name" value="{{user.last_name}}">
+
+  <label for="img-url">Profile Image Link: </label>
+  <input name="img-url" value="{{user.image_url}}">
+  
+  <button>Save</button>
+</form>
 
 {% block content %}
 {% endblock %}

@@ -1,8 +1,11 @@
 """Models for Blogly."""
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 db = SQLAlchemy()
-DEFAULT_IMAGE_URL = "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?cs=srgb&dl=pexels-pixabay-45201.jpg&fm=jpg"
+# os environ get url
+os.environ["DEFAULT_IMAGE_URL"] = "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg"
+DEFAULT_IMAGE_URL = os.environ.get("DEFAULT_IMAGE_URL")
 
 def connect_db(app):
     """Connect to database."""
@@ -11,6 +14,7 @@ def connect_db(app):
     db.init_app(app)
 
 class User(db.Model):
+    """User"""
     __tablename__ = "users"
 
     id = db.Column(
@@ -30,5 +34,6 @@ class User(db.Model):
 
     image_url = db.Column(
         db.Text,
-        default= DEFAULT_IMAGE_URL
+        nullable=False,
+        default=DEFAULT_IMAGE_URL
     )
