@@ -13,14 +13,18 @@
   <div class="container-fluid mb-4 mt-5">
     <div class="row">
       <div class="col d-flex justify-content-center">
+        {% for msg in get_flashed_messages() %}
+        <div class="alert alert-info">
+          {{msg}}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col d-flex justify-content-center">
         <main class="col w-100 d-flex justify-content-center">
-          {% for msg in get_flashed_messages() %}
-          <div>
-            {{msg}}
-          </div>
-          {% endfor %}
-
           {% block content %}
+
           {% endblock %}
         </main>
       </div>

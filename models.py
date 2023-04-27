@@ -37,3 +37,8 @@ class User(db.Model):
         nullable=False,
         default=DEFAULT_IMAGE_URL
     )
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+

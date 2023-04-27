@@ -30,7 +30,7 @@ def show_home_page():
 def show_all_users():
     """Show All users"""
 
-    users = User.query.all()
+    users = User.query.order_by(User.last_name, User.first_name).all()
 
     return render_template("user_listing.html", users=users)
 
@@ -46,11 +46,11 @@ def show_add_users_form():
 def process_add_form():
     """Process the add form, adding a new user and going back to /users"""
 
-    f_name = request.form["first-name"]
-    l_name = request.form["last-name"]
+    first_name = request.form["first-name"]
+    last_name = request.form["last-name"]
     img_url = request.form.get("img-url") or None
 
-    new_user = User(first_name=f_name, last_name=l_name, image_url = img_url)
+    new_user = User(first_name=first_name, last_name=last_name, image_url = img_url)
     db.session.add(new_user)
     db.session.commit()
 
@@ -81,14 +81,14 @@ def show_edit_page(user_id):
 def process_edit_form(user_id):
     """Process the edit form, returning the user to the /users page."""
 
-    f_name = request.form["first-name"]
-    l_name = request.form["last-name"]
+    first_name = request.form["first-name"]
+    last_name = request.form["last-name"]
     img_url = request.form["img-url"] if request.form["img-url"] else None
 
     user = User.query.get(user_id)
 
-    user.first_name = f_name
-    user.last_name = l_name
+    user.first_name = first_name
+    user.last_name = last_name
     user.image_url = img_url
 
     db.session.commit()
