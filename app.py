@@ -4,7 +4,7 @@ import os
 
 from flask import Flask, request, redirect, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
-from models import connect_db, db, User, Post
+from models import connect_db, db, User, Post, Tag, PostTag
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
@@ -22,7 +22,7 @@ connect_db(app)
 def show_home_page():
     """Display Home Page"""
 
-    flash("Redirected to Users")
+    flash("Redirected to Users List.")
     return redirect("/users")
 
 
@@ -54,7 +54,7 @@ def process_add_form():
     db.session.add(new_user)
     db.session.commit()
 
-    flash("Redirected to Profile")
+    flash(f"New user '{new_user.full_name}' joined.")
     return redirect(f"/users/{new_user.id}")
 
 
@@ -95,7 +95,7 @@ def process_edit_form(user_id):
 
     db.session.commit()
 
-    flash("Redirected to Users")
+    flash(f"User '{user.full_name}' edited.")
     return redirect("/users")
 
 
@@ -111,7 +111,7 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
 
-    flash("Redirected to Users")
+    flash(f"User '{user.full_name}' successfully deleted.")
     return redirect("/users")
 
 # Post routes
@@ -135,6 +135,8 @@ def create_new_post(user_id):
 
     db.session.add(new_post)
     db.session.commit()
+
+    flash(f"Post '{new_post.title}' added to your posts!")
 
     return redirect(f"/users/{user_id}")
 
@@ -171,6 +173,9 @@ def handle_post_edit(post_id):
 
     db.session.commit()
 
+
+    flash(f"Post '{post.title}' was edited.")
+
     return redirect(f"/posts/{post_id}")
 
 @app.post('/posts/<int:post_id>/delete')
@@ -179,15 +184,90 @@ def handle_post_delete(post_id):
 
 
     post = Post.query.get_or_404(post_id)
+    post.tags = []
 
-    user_id = post.user_id
+    # user_id = post.user_id
 
     db.session.delete(post)
     db.session.commit()
 
-    return redirect(f"/users/{user_id}")
+    flash(f"Post '{post.title}' successfully deleted.")
 
+    return redirect(f"/users/{post.user_id}")
 
 @app.errorhandler(404)
 def page_not_found():
     return render_template("404.html"), 404
+
+# Tag Routes
+
+@app.get("/tags")
+def list_tags():
+    """Lists all tags, with links to the tag detail page."""
+    tags = Tag.query.all()
+
+    return render_template("tag_listing.html", tags=tags)
+
+@app.get("/tags/<int:tag-id>")
+def show_tag_detail(tag_id):
+    """Show detail about a tag. Have links to edit form and to delete."""
+    tag = Tag.query.get_or_404(tag_id)
+
+    return render_template("tag_detail.html", tag=tag)
+
+@app.get("/tags/new")
+def show_new_tag_form():
+    """Shows a form to add a new tag."""
+
+    return render_template("new_tag.html")
+
+@app.post("/tags/new")
+def create_new_tag():
+    """Process add form, adds tag, and redirect to tag list."""
+    name = request.form.get_or_404("name")
+
+    new_tag = Tag(name=name)
+
+    db.session.add(new_tag)
+    db.commit()
+
+    flash(f"Tag '{new_tag.name}' was created.")
+
+    return redirect("/tags")
+
+@app.get("/tags/<int:tag-id>/edit")
+def get_tag_edit_form(tag_id):
+    """Show edit form for a tag."""
+    tag = Tag.query.get_or_404(tag_id)
+
+    return render_template("tag_edit.html", tag=tag)
+
+@app.post("/tags/<int:tag-id>/edit")
+def update_tag(tag_id):
+    """Process edit form, edit tag, and redirects to the tags list."""
+    name = request.form.get_or_404("name")
+
+    tag = Tag.query.get_or_404(tag_id)
+    tag.name = name
+    db.commit()
+
+    flash(f"Tag '{tag.name}' was edited.")
+
+    return redirect("/tags")
+
+@app.post("/tags/<int:tag-id>/delete")
+def delete_tag(tag_id):
+    """Delete a tag."""
+
+    tag = Tag.query.get_or_404(tag_id)
+    post_tags = PostTag.query.filter_by(tag_id=tag_id).all()
+
+    for post_tag in post_tags:
+        db.session.delete(post_tag)
+
+    db.session.delete(tag)
+    db.commit()
+
+    flash(f"Tag '{tag.name}'  wasdeleted.")
+
+    return redirect("/tags")
