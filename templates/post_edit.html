@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <h1>Edit Post</h1>
+      <div class="d-flex">
+        <form method="POST">
+          <label for="title" class="d-block" >Title: </label>
+          <input type="text" name="title" value="{{post.title}}">
+
+          <label for="content" class="d-block">Content: </label>
+          <textarea name="content">{{post.content}}</textarea>
+
+          <button class="btn btn-primary d-block">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Post Form -->
+{% endblock %}

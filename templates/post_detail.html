@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Post{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <h1>{{post.title}}</h1>
+      <p>{{post.content}}</p>
+      <i>Created by {{post.user.full_name}}</i>
+      <div class="d-flex">
+        <a class='btn btn-primary' href='/users/{{post.user_id}}'>
+          Cancel
+        </a>
+        <a href="/posts/{{ post.id }}/edit" class="btn btn-primary mr-3">
+          Edit
+        </a>
+        <form method="POST" action="/posts/{{ post.id }}/delete" class="d-inline-block">
+          <button class="btn btn-primary">
+            Delete
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Post Detail Page -->
+{% endblock %}

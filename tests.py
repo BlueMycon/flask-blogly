@@ -5,7 +5,7 @@ os.environ["DATABASE_URL"] = "postgresql:///blogly_test"
 from unittest import TestCase
 
 from app import app, db
-from models import User, DEFAULT_IMAGE_URL
+from models import User,Post, DEFAULT_IMAGE_URL
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
@@ -40,6 +40,8 @@ class UserViewTestCase(TestCase):
             image_url=None,
         )
 
+
+
         db.session.add(test_user)
         db.session.commit()
 
@@ -48,6 +50,15 @@ class UserViewTestCase(TestCase):
         # rely on this user in our tests without needing to know the numeric
         # value of their id, since it will change each time our tests are run.
         self.user_id = test_user.id
+
+        test_post = Post(
+            title="test1_title",
+            content="test1_content",
+            user_id=self.user_id
+        )
+
+        db.session.add(test_post)
+        db.session.commit()
 
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -92,3 +103,5 @@ class UserViewTestCase(TestCase):
             self.assertIn("User Detail Page", html)
             self.assertIn("test1_first", html)
             self.assertIn(DEFAULT_IMAGE_URL, html)
+
+    

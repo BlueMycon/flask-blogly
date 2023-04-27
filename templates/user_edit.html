@@ -2,6 +2,8 @@
 
 {% block title %}Blogly{% endblock %}
 
+{% block content %}
+
 <form method="POST">
   <label for="first-name">First Name: </label>
   <input name="first-name" value="{{user.first_name}}">
@@ -11,9 +13,9 @@
 
   <label for="img-url">Profile Image Link: </label>
   <input name="img-url" value="{{user.image_url}}">
-  
+
   <button>Save</button>
 </form>
 
-{% block content %}
+
 {% endblock %}
