@@ -1,21 +1,33 @@
 {% extends 'base.html' %}
 
-{% block title %}Create A Tag{% endblock %}
+{% block title %}Tag Details{% endblock %}
 
 {% block content %}
 
 <div class="container">
   <div class="row">
-    <h1>Tags</h1>
+    <h1>{{tag.name}}</h1>
   </div>
   <div class="row">
     <ul>
       {% for post in tag.posts %}
-        <a href="">
-          {{post.name}}
+        <a href="posts/{{post.id}}">
+          {{post.title}}
         </a>
       {% endfor %}
     </ul>
+  </div>
+  <div class="row">
+    <div class = "col-md-8">
+      <a href="/tags/{{tag.id}}/edit" class="btn btn-primary">
+        Edit
+      </a>
+      <form method="POST" action="/tags/{{tag.id}}/delete" class="d-inline-block">
+        <button class="btn btn-danger">
+          Delete
+        </button>
+      </form>
+    </div>
   </div>
 
 

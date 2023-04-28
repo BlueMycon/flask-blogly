@@ -50,6 +50,7 @@ def process_add_form():
     last_name = request.form["last-name"]
     img_url = request.form.get("img-url") or None
 
+
     new_user = User(first_name=first_name, last_name=last_name, image_url = img_url)
     db.session.add(new_user)
     db.session.commit()
@@ -121,8 +122,9 @@ def show_new_post_form(user_id):
     """Show form to add a post for that user."""
 
     user = User.query.get_or_404(user_id)
+    tags = Tag.query.all()
 
-    return render_template('new_post.html', user=user)
+    return render_template('new_post.html', user=user, tags=tags)
 
 @app.post('/users/<int:user_id>/posts/new')
 def create_new_post(user_id):
@@ -130,6 +132,7 @@ def create_new_post(user_id):
 
     title = request.form["title"]
     content = request.form["content"]
+    tags_checked = request.form.getlist("tags-checked")
 
     new_post = Post(title=title, content=content, user_id=user_id)
 
@@ -208,7 +211,7 @@ def list_tags():
 
     return render_template("tag_listing.html", tags=tags)
 
-@app.get("/tags/<int:tag-id>")
+@app.get("/tags/<int:tag_id>")
 def show_tag_detail(tag_id):
     """Show detail about a tag. Have links to edit form and to delete."""
     tag = Tag.query.get_or_404(tag_id)
@@ -224,38 +227,38 @@ def show_new_tag_form():
 @app.post("/tags/new")
 def create_new_tag():
     """Process add form, adds tag, and redirect to tag list."""
-    name = request.form.get_or_404("name")
+    name = request.form.get("name")
 
     new_tag = Tag(name=name)
 
     db.session.add(new_tag)
-    db.commit()
+    db.session.commit()
 
     flash(f"Tag '{new_tag.name}' was created.")
 
     return redirect("/tags")
 
-@app.get("/tags/<int:tag-id>/edit")
+@app.get("/tags/<int:tag_id>/edit")
 def get_tag_edit_form(tag_id):
     """Show edit form for a tag."""
     tag = Tag.query.get_or_404(tag_id)
 
     return render_template("tag_edit.html", tag=tag)
 
-@app.post("/tags/<int:tag-id>/edit")
+@app.post("/tags/<int:tag_id>/edit")
 def update_tag(tag_id):
     """Process edit form, edit tag, and redirects to the tags list."""
-    name = request.form.get_or_404("name")
+    name = request.form.get("name")
 
     tag = Tag.query.get_or_404(tag_id)
     tag.name = name
-    db.commit()
+    db.session.commit()
 
     flash(f"Tag '{tag.name}' was edited.")
 
     return redirect("/tags")
 
-@app.post("/tags/<int:tag-id>/delete")
+@app.post("/tags/<int:tag_id>/delete")
 def delete_tag(tag_id):
     """Delete a tag."""
 
@@ -266,8 +269,8 @@ def delete_tag(tag_id):
         db.session.delete(post_tag)
 
     db.session.delete(tag)
-    db.commit()
+    db.session.commit()
 
-    flash(f"Tag '{tag.name}'  wasdeleted.")
+    flash(f"Tag '{tag.name}'  was deleted.")
 
     return redirect("/tags")
