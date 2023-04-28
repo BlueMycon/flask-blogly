@@ -200,8 +200,6 @@ def handle_post_delete(post_id):
     post = Post.query.get_or_404(post_id)
     post.tags = []
 
-    # user_id = post.user_id
-
     db.session.delete(post)
     db.session.commit()
 
