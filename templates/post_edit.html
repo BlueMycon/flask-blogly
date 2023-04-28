@@ -16,6 +16,16 @@
           <label for="content" class="d-block">Content: </label>
           <textarea name="content">{{post.content}}</textarea>
 
+          {% for tag in tags %}
+          <label for = "{{tag.name}}">{{tag.name}}</label>
+          <input multiple type = "checkbox" id = "{{tag.name}}"
+                 name = "tags-checked" value="{{tag.id}}"
+                 {% if tag in post.tags %}
+                 checked
+                 {% endif %}
+          >
+          {% endfor %}
+
           <button class="btn btn-primary d-block">Save</button>
         </form>
       </div>

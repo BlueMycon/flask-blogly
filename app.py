@@ -132,9 +132,13 @@ def create_new_post(user_id):
 
     title = request.form["title"]
     content = request.form["content"]
-    tags_checked = request.form.getlist("tags-checked")
+    tag_ids_checked = request.form.getlist("tags-checked")
+    tags = [Tag.query.get(tag_id) for tag_id in tag_ids_checked]
 
     new_post = Post(title=title, content=content, user_id=user_id)
+    if tags:
+        for tag in tags:
+            new_post.tags.append(tag)
 
     db.session.add(new_post)
     db.session.commit()
@@ -157,8 +161,9 @@ def show_post_edit(post_id):
     """Show form to edit a post"""
 
     post = Post.query.get_or_404(post_id)
+    tags = Tag.query.all()
 
-    return render_template("post_edit.html", post=post)
+    return render_template("post_edit.html", post=post, tags=tags)
 
 
 @app.post('/posts/<int:post_id>/edit')
@@ -167,9 +172,15 @@ def handle_post_edit(post_id):
 
     title = request.form["title"]
     content = request.form["content"]
+    tag_ids_checked = request.form.getlist("tags-checked")
 
+    tags = [Tag.query.get(tag_id) for tag_id in tag_ids_checked]
 
     post = Post.query.get_or_404(post_id)
+    post.tags = []
+    if tags:
+        for tag in tags:
+            post.tags.append(tag)
 
     post.title = title
     post.content = content
